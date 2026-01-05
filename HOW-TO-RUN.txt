@@ -1,0 +1,32 @@
+CAMPUS GUARDIAN - HOW TO RUN
+=============================
+
+STEP 1: Start Flask Backend
+---------------------------
+Open Terminal 1:
+cd flask-backend
+python app.py
+
+(Backend will run on http://localhost:8080)
+
+STEP 2: Start Frontend
+----------------------
+Open Terminal 2:
+cd frontend  
+python -m http.server 8000
+
+(Frontend will run on http://localhost:8000)
+
+STEP 3: Access Application
+--------------------------
+Open browser and go to: http://localhost:8000
+
+FEATURES AVAILABLE:
+- User Login/Signup
+- Submit Complaints
+- Track Complaints  
+- Admin Dashboard
+- Department Management
+
+ADMIN ACCESS: http://localhost:8000/admin/login.html
+USER ACCESS: http://localhost:8000/user/login.html

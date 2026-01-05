@@ -1,0 +1,4 @@
+# Campus Guardian - Minimal Requirements
+
+Flask>=2.0.0
+Flask-CORS>=3.0.0

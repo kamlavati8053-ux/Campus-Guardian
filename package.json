@@ -1,0 +1,17 @@
+{
+  "name": "campus-guardian",
+  "version": "1.0.0",
+  "description": "Campus complaint management system",
+  "scripts": {
+    "start": "serve frontend",
+    "dev": "serve frontend -l 8000",
+    "backend": "cd backend && ./mvnw spring-boot:run"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1",
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["campus", "complaints", "management"],
+  "author": "",
+  "license": "MIT"
+}

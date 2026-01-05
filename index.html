@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Guardian</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white; 
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 40px 0; }
+        .header h1 { font-size: 3rem; margin-bottom: 10px; }
+        .header p { font-size: 1.2rem; opacity: 0.9; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 40px 0; }
+        .feature { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px; text-align: center; }
+        .feature h3 { margin-bottom: 15px; color: #ffd700; }
+        .buttons { text-align: center; margin: 40px 0; }
+        .btn { 
+            display: inline-block; 
+            padding: 15px 30px; 
+            margin: 10px; 
+            background: #ff6b6b; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #ff5252; }
+        .btn-secondary { background: transparent; border: 2px solid white; }
+        .btn-secondary:hover { background: white; color: #1e3c72; }
+        .footer { text-align: center; padding: 20px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Campus Guardian</h1>
+            <p>Secure Campus Complaint Management System</p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🔒 Secure Reporting</h3>
+                <p>Submit complaints safely with complete privacy protection</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Real-time Tracking</h3>
+                <p>Track your complaint status from submission to resolution</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Quick Response</h3>
+                <p>Get acknowledgment within 24 hours and regular updates</p>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <a href="login.html" class="btn">Student Login</a>
+            <a href="admin.html" class="btn btn-secondary">Admin Portal</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Campus Guardian - Making campuses safer</p>
+        </div>
+    </div>
+</body>
+</html>

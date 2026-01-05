@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Campus Guardian</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white; 
+            min-height: 100vh;
+        }
+        .header { 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-top: 20px; }
+        .card { 
+            background: rgba(255,255,255,0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            backdrop-filter: blur(10px);
+        }
+        .card h3 { margin-bottom: 15px; color: #ffd700; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select { 
+            width: 100%; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 5px; 
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .btn { 
+            padding: 10px 20px; 
+            background: #ff6b6b; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+        }
+        .btn:hover { background: #ff5252; }
+        .complaint-item { 
+            background: rgba(0,0,0,0.2); 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 5px;
+        }
+        .status { 
+            padding: 3px 8px; 
+            border-radius: 3px; 
+            font-size: 12px;
+        }
+        .status-pending { background: #ff9800; }
+        .status-resolved { background: #4caf50; }
+        .logout { background: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Campus Guardian - Student Dashboard</h1>
+        <div>
+            <span id="userName">Welcome, Student</span>
+            <button class="btn logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>📝 Submit New Complaint</h3>
+                <form id="complaintForm">
+                    <div class="form-group">
+                        <label>Title:</label>
+                        <input type="text" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Department:</label>
+                        <select id="department" required>
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <textarea id="description" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Submit Complaint</button>
+                </form>
+                <div id="submitMessage"></div>
+            </div>
+
+            <div class="card">
+                <h3>📊 My Complaints</h3>
+                <div id="complaintsList">Loading complaints...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Check if user is logged in
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.email) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('userName').textContent = `Welcome, ${user.name}`;
+        }
+
+        // Load departments
+        async function loadDepartments() {
+            try {
+                const response = await fetch(`${API_URL}/complaints/departments`);
+                const data = await response.json();
+                
+                const select = document.getElementById('department');
+                data.departments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept.name;
+                    option.textContent = dept.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading departments:', error);
+            }
+        }
+
+        // Load complaints
+        async function loadComplaints() {
+            try {
+                const response = await fetch(`${API_URL}/complaints`);
+                const data = await response.json();
+                
+                const container = document.getElementById('complaintsList');
+                if (data.complaints.length === 0) {
+                    container.innerHTML = '<p>No complaints submitted yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.complaints.map(complaint => `
+                    <div class="complaint-item">
+                        <h4>${complaint.title}</h4>
+                        <p><strong>Department:</strong> ${complaint.department}</p>
+                        <p><strong>Status:</strong> <span class="status status-${complaint.status}">${complaint.status}</span></p>
+                        <p><strong>Date:</strong> ${new Date(complaint.created_at).toLocaleDateString()}</p>
+                        <p>${complaint.description}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('complaintsList').innerHTML = '<p>Error loading complaints.</p>';
+            }
+        }
+
+        // Submit complaint
+        document.getElementById('complaintForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('title').value,
+                department: document.getElementById('department').value,
+                description: document.getElementById('description').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/complaints`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('submitMessage').innerHTML = 
+                        '<div style="color: #4caf50; margin-top: 10px;">Complaint submitted successfully!</div>';
+                    document.getElementById('complaintForm').reset();
+                    loadComplaints(); // Refresh complaints list
+                } else {
+                    document.getElementById('submitMessage').innerHTML = 
+                        '<div style="color: #f44336; margin-top: 10px;">Error submitting complaint.</div>';
+                }
+            } catch (error) {
+                document.getElementById('submitMessage').innerHTML = 
+                    '<div style="color: #f44336; margin-top: 10px;">Connection error. Please try again.</div>';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize
+        loadDepartments();
+        loadComplaints();
+    </script>
+</body>
+</html>
